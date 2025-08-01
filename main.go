@@ -1,4 +1,4 @@
-package CardGame
+package main
 
 import (
 	"blackJack/game"

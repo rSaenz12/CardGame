@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"GuiPlusGame/game"
+	"blackJack/game"
 	"fmt"
 	"gioui.org/app"
 
