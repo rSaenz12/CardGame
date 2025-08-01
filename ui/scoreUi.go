@@ -62,7 +62,10 @@ func RunScorUi(window *app.Window, gameInstance *game.Game) error {
 			if menuButton.Clicked(gtx) {
 				fmt.Println("Menu clicked!")
 
-				RunMenu(window, gameInstance)
+				err := RunMenu(window, gameInstance)
+				if err != nil {
+					return err
+				}
 			}
 			//uses game function to exit program
 			if exitButton.Clicked(gtx) {
