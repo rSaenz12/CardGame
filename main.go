@@ -1,12 +1,11 @@
-package main
+package CardGame
 
 import (
+	"blackJack/game"
+	"blackJack/ui"
+	"gioui.org/app"
 	"log"
 	"os"
-
-	"CardGame/game" // Import game package
-	"CardGame/ui"   // Import ui package
-	"gioui.org/app" // Required for app.Window and app.Main
 )
 
 func main() {
