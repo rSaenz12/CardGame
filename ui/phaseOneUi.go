@@ -28,9 +28,6 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 	var userCards []image.Image // Slice to hold the card images
 	var dealerCards []image.Image
 
-	//when true (upon win or loss), next screen is the winLossScreenUi.go
-	switchToWinOrLossScreen := false
-
 	//scale for objects,
 	scale := float32(0.25) // 25% size
 
@@ -170,8 +167,13 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 					return DrawThreeButtons(gtx, &hitButton, &standButton, &doubleDownButton, "Hit", "Stand", "Double Down")
 				}),
 			)
+			//sends straight to end screen, most likley a blackjack or blackjack tie
 			if gameInstance.CheckGameEnded() {
-				switchToWinOrLossScreen = true
+				window.Invalidate()
+				err := RunWinOrLossScreen(window, gameInstance)
+				if err != nil {
+					return err
+				}
 			}
 
 			e.Frame(gtx.Ops)
@@ -179,14 +181,6 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 			if hitButton.Clicked(gtx) || standButton.Clicked(gtx) || doubleDownButton.Clicked(gtx) {
 				//force repaint of ui
 				window.Invalidate()
-			}
-			if switchToWinOrLossScreen {
-				fmt.Println("SOMEONE WON")
-				err := RunWinOrLossScreen(window, gameInstance)
-				if err != nil {
-					return err
-				}
-				return err
 			}
 		}
 	}
