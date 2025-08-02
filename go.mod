@@ -1,1 +1,1 @@
-module blackJack
+module awesomeProject
