@@ -2,7 +2,17 @@ package main
 
 import (
 	"fmt"
+	"gioui.org/app"
+	"gioui.org/f32"
+	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/op/paint"
+	"gioui.org/widget"
+	"image"
+	"image/png"
+	"log"
 	"math/rand"
+	"os"
 	"strings"
 	"time"
 )
@@ -182,5 +192,153 @@ func main() {
 	computer := Player{Name: "Computer"}
 	deal(&deck, &player, &computer)
 	fmt.Println("Go Fish game started!")
+
+	// Starting the Gio GUI in a separate goroutine
+	go func() {
+		//main application window
+		window := new(app.Window)
+
+		// Pass the window and the initialized game state to your UI's Run function
+		if err := Run(window, &player); err != nil { // Pass currentGame here
+			log.Fatal(err)
+		}
+		os.Exit(0) // Exit the program gracefully when the window closes
+	}()
+
+	//Gio application's main loop
+	app.Main()
+
 	gameLoop(&deck, &player, &computer)
+
+}
+
+func Run(window *app.Window, player *Player) error {
+
+	var ops op.Ops
+
+	background := LoadImage("tableTop.png")
+	bgOp := paint.NewImageOp(background)
+
+	var userCards []image.Image
+	var userHand []string
+
+	for _, card := range player.Hand {
+		userHand = append(userHand, card.Rank)
+	}
+
+	// Declare imageWidget once outside the loop for correct usage
+	var imageWidget widget.Image
+
+	imageWidget = widget.Image{
+		Src: bgOp,
+		Fit: widget.Cover,
+	}
+
+	for {
+		switch e := window.Event().(type) {
+
+		case app.DestroyEvent:
+			return e.Err
+
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+
+			// Clear ops for the new frame
+			ops.Reset()
+
+			userCards = make([]image.Image, len(player.Hand))
+			userCards = GetCardImage(userHand)
+
+			//scale for objects,
+			scale := float32(0.25) // 25% size
+
+			layout.Stack{}.Layout(gtx,
+				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+					return imageWidget.Layout(gtx)
+				}),
+				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+					yOffset := gtx.Constraints.Max.Y / 10
+
+					return layout.Flex{
+						Axis:      layout.Horizontal,
+						Spacing:   layout.SpaceStart,
+						Alignment: layout.Middle,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							// apply a vertical offset for the row of cards
+							offset := op.Offset(image.Pt(0, yOffset)).Push(gtx.Ops)
+							defer offset.Pop()
+
+							// Loop through cards and draw each with spacing
+							cardWidth := 25 // approx width after scaling
+							spacing := 0
+							cardHeight := int(float32(gtx.Constraints.Max.Y) * 0.6)
+							startingOffset := int(float32(gtx.Constraints.Max.X) / 2)
+
+							for i, card := range userCards {
+								cardOffset := op.Offset(image.Pt(startingOffset+(i*(cardWidth+spacing)), cardHeight)).Push(gtx.Ops)
+								scaleOp := op.Affine(f32.Affine2D{}.Scale(f32.Pt(0, 0), f32.Pt(scale, scale))).Push(gtx.Ops)
+
+								//prints card
+								paint.NewImageOp(card).Add(gtx.Ops)
+								paint.PaintOp{}.Add(gtx.Ops)
+
+								scaleOp.Pop()
+								cardOffset.Pop()
+							}
+							return layout.Dimensions{Size: image.Pt(len(userCards)*(cardWidth+spacing), cardWidth)}
+						}),
+					)
+				}),
+			)
+			e.Frame(gtx.Ops)
+		}
+
+	}
+
+}
+
+// LoadImage loads the images using the path
+func LoadImage(path string) image.Image {
+	f, err := os.Open(path)
+	if err != nil {
+		log.Fatalf("ERROR: Failed to open image %s: %v\n", path, err)
+	}
+	img, err := png.Decode(f)
+	if err != nil {
+		log.Fatalf("ERROR: Failed to decode image %s: %v\n", path, err)
+	}
+	// Check if closing the file results in an error
+	if err := f.Close(); err != nil {
+		log.Fatalf("ERROR: Failed to close image file %s: %v\n", path, err)
+	}
+	return img
+}
+
+// GetCardImage grabs the path,loads images, adds to an array of images
+func GetCardImage(currentHand []string) []image.Image {
+	var images []image.Image
+
+	//loops through the current hand calling each card, adding them as slices of images to the array
+	for _, card := range currentHand {
+		path := "deckImages/" + card + ".png"
+
+		f, err := os.Open(path)
+		if err != nil {
+			log.Fatalf("ERROR: Failed to open image %s: %v\n", path, err)
+		}
+
+		img, err := png.Decode(f)
+		if err != nil {
+			log.Fatalf("ERROR: Failed to decode image %s: %v\n", path, err)
+		}
+
+		// Check if closing the file results in an error
+		if err := f.Close(); err != nil {
+			log.Fatalf("ERROR: Failed to close image file %s: %v\n", path, err)
+		}
+
+		images = append(images, img)
+	}
+	return images
 }
