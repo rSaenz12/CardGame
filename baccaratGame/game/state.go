@@ -1,3 +1,4 @@
+// This file manages the game state across turns and delivers structures to save score, and the progression of the deck of cards. 
 package game
 
 import (
@@ -17,16 +18,16 @@ type Game struct {
 	CardsRevealed bool
 }
 
-// NewGame initializes a new Baccarat game instance.
+// NewGame creates a new Baccarat game instance.
 func NewGame() (*Game, error) {
 	game := &Game{
 		UserPoints:    1000, // Starting points
 		CurrentPhase:  "betting",
 		CardsRevealed: false,
 	}
-	game.Shoe = newShoe(6) // Baccarat is usually played with 6 or 8 decks
+	game.Shoe = newShoe(6) // Baccarat is usually played with 6 decks
 	shuffle(game.Shoe)
-	// Pre-deal two face-down cards to each hand for initial display
+	// Pre-deal 
 	game.PlayerHand = make([]Card, 2)
 	game.BankerHand = make([]Card, 2)
 	return game, nil
@@ -39,7 +40,7 @@ func (g *Game) PlaceBet(betType string) {
 	}
 }
 
-// DealHand plays a round of Baccarat.
+// DealHand plays the round
 func (g *Game) DealHand() {
 	if g.UserBet == "" {
 		g.LastResult = "Please place a bet first!"
@@ -127,7 +128,7 @@ func (g *Game) determineWinner() {
 
 // NewRound resets the game for the next round of betting.
 func (g *Game) NewRound() {
-	if len(g.Shoe) < 20 { // Reshuffle when shoe is low
+	if len(g.Shoe) < 20 { // Reshuffle when deck is low
 		g.Shoe = newShoe(6)
 		shuffle(g.Shoe)
 	}
