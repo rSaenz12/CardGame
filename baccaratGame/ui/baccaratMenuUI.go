@@ -1,3 +1,5 @@
+//Game internal menu UI
+
 package ui
 
 import (
@@ -9,7 +11,7 @@ import (
 	"gioui.org/widget"
 	"image/color"
 )
-
+//This fuction presents the menu for the game and returns a string message based on button clicks. 
 func RunBaccaratMenu(window *app.Window) string {
 	var ops op.Ops
 
