@@ -1,3 +1,5 @@
+//This is the basic driver file for the game that is called from the main menu of the entire application. 
+
 package baccaratGame
 
 import (
