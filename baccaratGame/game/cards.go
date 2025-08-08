@@ -1,3 +1,5 @@
+//This file defines the "baackend" functions of the cards. how they behavior and are manipulated. 
+
 package game
 
 import (
@@ -32,7 +34,7 @@ func shuffle(shoe []Card) {
 	})
 }
 
-// drawCard removes and returns the top card from the shoe.
+// drawCard removes and returns the top card from the stack called "shoe".
 func (g *Game) drawCard() Card {
 	card := g.Shoe[0]
 	g.Shoe = g.Shoe[1:]
