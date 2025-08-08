@@ -38,32 +38,3 @@ func (g *Game) drawCard() Card {
 	g.Shoe = g.Shoe[1:]
 	return card
 }
-
-/*
-// getCardValue returns the Baccarat value of a card.
-func getCardValue(card Card) int {
-	switch card.Rank {
-	case "A":
-		return 1
-	case "2", "3", "4", "5", "6", "7", "8", "9":
-		val := 0
-		_, err := fmt.Sscanf(card.Rank, "%d", &val)
-		if err != nil {
-			return 0
-		}
-		return val
-	case "T", "J", "Q", "K":
-		return 0
-	default:
-		return 0
-	}
-}
-
-// getHandValue returns the total Baccarat value of a hand.
-func getHandValue(hand []Card) int {
-	value := 0
-	for _, card := range hand {
-		value += getCardValue(card)
-	}
-	return value % 10
-}*/

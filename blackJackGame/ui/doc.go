@@ -9,8 +9,8 @@ Purpose: This package implements the user interface for a Blackjack game,
 	menuUi.go
 	phaseOneUi.go
 	hitUserUi.go
-	winLossScreenUi.go
+	resources.go
 	scoreUi.go
-	buttonFunctions.go
+	winLossScreenUi.go
 */
 package ui

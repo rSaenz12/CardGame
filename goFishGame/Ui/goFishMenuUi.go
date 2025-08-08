@@ -1,8 +1,9 @@
-package ui
+package Ui
 
 import (
-	"CombinedCardgames/blackJackGame/game"
+	"CombinedCardgames/goFishGame/goFishBackEnd"
 	ui2 "CombinedCardgames/uiFunctions"
+
 	"gioui.org/app"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -10,14 +11,13 @@ import (
 	"gioui.org/widget"
 )
 
-func RunMenu(window *app.Window, gameInstance *game.Game) (string, error) {
-
+func RunMenu(window *app.Window) (string, error) {
 	var ops op.Ops
 
 	//Declare clickable for each menu option
-	var startGameButton, scoreButton, mainMenuButton, exitButton widget.Clickable
+	var startGameButton, mainMenuButton, exitButton widget.Clickable
 
-	background := ui2.LoadImage(backgroundPath)
+	background := ui2.LoadImage(backgroundImagePath)
 	bgOp := paint.NewImageOp(background)
 
 	// Declare imageWidget once outside the loop for correct usage
@@ -27,33 +27,20 @@ func RunMenu(window *app.Window, gameInstance *game.Game) (string, error) {
 		Src: bgOp,
 		Fit: widget.Cover,
 	}
-
 	for {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
 			return "Error", e.Err
-
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
 
 			// Clear ops for the new frame
 			ops.Reset()
-
 			// Calls first game Ui and game input
 			if startGameButton.Clicked(gtx) {
-				gameInstance.PlayGame("1")
-				choice, err := RunPhaseOne(window, gameInstance)
-				if err != nil {
-					return "Error", err
-				}
-
-				return choice, nil
-			}
-			//Calls Score UI and Game input
-			if scoreButton.Clicked(gtx) {
-				gameInstance.PlayGame("2")
-				choice, err := RunScoreUi(window, gameInstance)
+				gameInstance, err := goFishBackEnd.NewGame()
+				choice, err := RunGoFishUi(window, gameInstance)
 				if err != nil {
 					return "Error", err
 				}
@@ -68,22 +55,21 @@ func RunMenu(window *app.Window, gameInstance *game.Game) (string, error) {
 			if exitButton.Clicked(gtx) {
 				return "exit", nil
 			}
-
 			//Layout Stack of background image and menu buttons
 			layout.Stack{}.Layout(gtx,
 				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 					return imageWidget.Layout(gtx)
 				}),
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					return ui2.DrawFourButtons(gtx,
+					return ui2.DrawThreeButtons(gtx,
 						//button variables
-						&startGameButton, &scoreButton, &mainMenuButton, &exitButton,
+						&startGameButton, &mainMenuButton, &exitButton,
 						//button text
-						"Start Game", "Score", "Main Menu", "Exit",
+						"Start Game", "Main Menu", "Exit",
 						//button colors
-						green, red, blue, yellow,
+						materialRed, materialBlue, materialYellow,
 						//text color
-						white)
+						black)
 				}),
 			)
 			e.Frame(gtx.Ops)

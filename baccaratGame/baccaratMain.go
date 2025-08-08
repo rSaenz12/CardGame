@@ -5,6 +5,7 @@ import (
 	"CombinedCardgames/baccaratGame/ui"
 	"gioui.org/app"
 	"log"
+	"os"
 )
 
 func BaccaratMain(window *app.Window) {
@@ -15,7 +16,7 @@ func BaccaratMain(window *app.Window) {
 
 	for {
 		// Show the Baccarat menu and wait for the user's choice
-		choice := ui.RunBaccaratMenu(window, currentGame)
+		choice := ui.RunBaccaratMenu(window)
 
 		switch choice {
 		case "start":
@@ -28,7 +29,9 @@ func BaccaratMain(window *app.Window) {
 			return
 		case "exit":
 			// If the user chooses to exit, terminate the application
+			os.Exit(0)
 			return
+
 		}
 	}
 }

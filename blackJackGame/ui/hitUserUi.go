@@ -12,7 +12,7 @@ import (
 	"image"
 )
 
-func RunHitUserUi(window *app.Window, gameInstance *game.Game) error {
+func RunHitUserUi(window *app.Window, gameInstance *game.Game) (string, error) {
 
 	var ops op.Ops
 
@@ -58,7 +58,7 @@ func RunHitUserUi(window *app.Window, gameInstance *game.Game) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Error", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -177,14 +177,14 @@ func RunHitUserUi(window *app.Window, gameInstance *game.Game) error {
 			e.Frame(gtx.Ops)
 
 			if hitButton.Clicked(gtx) || standButton.Clicked(gtx) {
-				window.Invalidate() // <- Force repaint on next loop
+				window.Invalidate() //Forces repaint on next loop
 			}
 			if switchToWinOrLossScreen {
-				err := RunWinOrLossScreen(window, gameInstance)
+				choice, err := RunWinOrLossScreen(window, gameInstance)
 				if err != nil {
-					return err
+					return "Error", err
 				}
-				return err
+				return choice, nil
 			}
 		}
 	}

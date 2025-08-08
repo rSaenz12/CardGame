@@ -17,7 +17,7 @@ import (
 	"gioui.org/widget/material"
 )
 
-func RunScorUi(window *app.Window, gameInstance *game.Game) error {
+func RunScoreUi(window *app.Window, gameInstance *game.Game) (string, error) {
 
 	var ops op.Ops
 
@@ -42,7 +42,7 @@ func RunScorUi(window *app.Window, gameInstance *game.Game) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Error", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -60,15 +60,11 @@ func RunScorUi(window *app.Window, gameInstance *game.Game) error {
 			//Sends user to menuUi.go
 			//No game input needed
 			if menuButton.Clicked(gtx) {
-				err := RunMenu(window, gameInstance)
-				if err != nil {
-					return err
-				}
-
+				return "", nil
 			}
 			//uses game function to exit program
 			if exitButton.Clicked(gtx) {
-				gameInstance.PlayGame("3")
+				return "mainMenu", nil
 			}
 			//Layout Stack of background image,Box,Text, and buttons
 			layout.Stack{}.Layout(gtx,
@@ -95,7 +91,7 @@ func RunScorUi(window *app.Window, gameInstance *game.Game) error {
 				}),
 				//"Score"
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					// --- Option 1: Position with Inset (recommended for simple offsets) ---
+					//positioned with Inset
 					return layout.Inset{
 						Top:  unit.Dp(textPosY), // Adjust these values to move the score
 						Left: unit.Dp(textPosX), // from the top-left corner

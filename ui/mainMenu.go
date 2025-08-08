@@ -81,19 +81,23 @@ func RunMainMenu(window *app.Window) error {
 				}),
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 					return uiFunctions.DrawFourButtons(gtx,
-						&playBlackJackButton, //buton1
+						//button variables
+						&playBlackJackButton,
 						&playGoFishButton,
-						&playBaccaratButton, //button3
-						&exitButton,         //button3
-						"BlackJack",         //button1 text
+						&playBaccaratButton,
+						&exitButton,
+						//button text
+						"BlackJack",
 						"GoFish",
-						"Baccarat", //button2 text
-						"Exit",     //button3 text
-						retroRed,   //button1 color
-						retroBlue,  //button2 color
+						"Baccarat",
+						"Exit",
+						//button colors
+						retroRed,
+						retroBlue,
 						retroYellow,
-						retroGreen, //button3 color
-						white)      //text color
+						retroGreen,
+						//text color
+						white)
 				}),
 			)
 			e.Frame(gtx.Ops)

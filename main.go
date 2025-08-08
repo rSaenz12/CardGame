@@ -1,7 +1,6 @@
 package main
 
 import (
-	"CombinedCardgames/signals"
 	"CombinedCardgames/ui"
 	"gioui.org/app"
 
@@ -19,16 +18,8 @@ func main() {
 		if err := ui.RunMainMenu(window); err != nil { // Pass currentGame here
 			log.Fatal(err)
 		}
-		//exit
-		sig := <-signals.MenuSignal
-		if sig {
-			if err := ui.RunMainMenu(window); err != nil { // Pass currentGame here
-				log.Fatal(err)
-			}
-		}
 		os.Exit(0)
 	}()
-
 	//Gio application's main loop
 	app.Main()
 }

@@ -15,7 +15,7 @@ import (
 	"gioui.org/widget/material"
 )
 
-func RunWinOrLossScreen(window *app.Window, gameInstance *game.Game) error {
+func RunWinOrLossScreen(window *app.Window, gameInstance *game.Game) (string, error) {
 
 	var ops op.Ops
 
@@ -72,7 +72,7 @@ func RunWinOrLossScreen(window *app.Window, gameInstance *game.Game) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Destroy Event", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -89,17 +89,15 @@ func RunWinOrLossScreen(window *app.Window, gameInstance *game.Game) error {
 			//Calls the phaseOne UI, running PlayGame input of 1 to return to correct state
 			if playAgainButton.Clicked(gtx) {
 				gameInstance.PlayGame("1")
-				err := RunPhaseOne(window, gameInstance)
+				choice, err := RunPhaseOne(window, gameInstance)
 				if err != nil {
-					return err
+					return "Error", err
 				}
+				return choice, nil
 			}
 			//Calls Menu UI, no need for a game input
 			if menuButton.Clicked(gtx) {
-				err := RunMenu(window, gameInstance)
-				if err != nil {
-					return err
-				}
+				return "", nil
 			}
 			//Layout Stack of background image, cards, and buttons
 			layout.Stack{}.Layout(gtx,

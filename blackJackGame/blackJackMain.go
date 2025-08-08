@@ -1,11 +1,11 @@
 package blackJackGame
 
 import (
-	"log"
-	"os"
-
 	"CombinedCardgames/blackJackGame/game" // Import game package
 	"CombinedCardgames/blackJackGame/ui"   // Import ui package
+	"fmt"
+	"log"
+	"os"
 
 	"gioui.org/app" // Required for app.Window and app.Main
 )
@@ -17,22 +17,20 @@ func BlackJackMain(window *app.Window) {
 		log.Fatalf("Failed to initialize game: %v", err)
 	}
 
-	// Starting the Gio GUI in a separate goroutine
-	go func() {
-		//main application window
-		//window := new(app.Window)
+	for {
+		choice, err := ui.RunMenu(window, currentGame)
 
-		// Pass the window and the initialized game state to your UI's Run function
-		err := ui.RunMenu(window, currentGame)
-		if err != nil {
-			log.Fatalf("Failed to run menu: %v", err)
+		switch choice {
+		case "mainMenu":
+			return
+
+		case "exit":
+			os.Exit(0)
+			return
+
+		case "Error":
+			fmt.Println(err)
+			return
 		}
-
-		//exit
-		os.Exit(0)
-	}()
-
-	//Gio application's main loop
-	app.Main()
-
+	}
 }

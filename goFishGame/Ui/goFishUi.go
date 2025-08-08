@@ -7,7 +7,6 @@ import (
 	ui2 "CombinedCardgames/uiFunctions"
 
 	"gioui.org/app"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -22,8 +21,10 @@ import (
 	"time"
 )
 
-func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
+func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) (string, error) {
 	var ops op.Ops
+
+	menuButton := new(widget.Clickable)
 
 	// Load the background image once outside the loop for efficiency.
 	background := ui2.LoadImage(backgroundImagePath)
@@ -50,7 +51,7 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Error", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -92,6 +93,10 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 			//scale for objects,
 			scale := float32(0.25) // 25% size
 
+			if menuButton.Clicked(gtx) {
+				return "", nil
+			}
+
 			// handling button clicks and game turns
 			if game.CurrentTurn == "user" {
 				for i, click := range clicks {
@@ -124,7 +129,7 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 				game.ComputerTurn()
 				logHandling.AppendLog("Computer's turn completed.")
 				game.CurrentTurn = "user" // Switch turn back to the user
-				//RunGoFishUi(window, game)
+
 				window.Invalidate() // Redraw after the computer's move
 			}
 
@@ -135,28 +140,26 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 				// Determine winner based on collected books
 				if game.UserPlayer.NumberOfBooks > game.ComputerPlayer.NumberOfBooks {
 					logHandling.AppendLog("You win!")
-					err := runEndScreen(window, "You win!")
+					choice, err := runEndScreen(window, "You win!")
 					if err != nil {
-						return err
+						return "Error", err
 					}
+					return choice, nil
 				} else if game.UserPlayer.NumberOfBooks < game.ComputerPlayer.NumberOfBooks {
 					logHandling.AppendLog("Computer wins!")
-					err := runEndScreen(window, "Computer wins!")
+					choice, err := runEndScreen(window, "Computer wins!")
 					if err != nil {
-						return err
+						return "Error", err
 					}
+					return choice, nil
 				} else {
 					logHandling.AppendLog("It's a tie!")
-					err := runEndScreen(window, "It's a tie!")
+					choice, err := runEndScreen(window, "It's a tie!")
 					if err != nil {
-						return err
+						return "Error", err
 					}
-
+					return choice, nil
 				}
-				// Close the application window as the game has concluded
-				// This is the correct way to call ActionClose on the app package.
-				(*app.Window).Perform(window, system.ActionClose)
-				return nil // Exit the RunGoFishUi function
 			}
 			// End game turn / input handling
 
@@ -219,6 +222,21 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 						//text color
 						black)
 				}),
+				//menu button
+				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+					return layout.Inset{
+						//position on screen, should be top right corner
+						Top:  unit.Dp(10),                        // Adjust these values to move the score
+						Left: unit.Dp(gtx.Constraints.Max.X / 2), // Using the X axis /2 to position in the middle
+					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						//button background and ext
+						hitButton := material.Button(th, menuButton, "Menu")
+						hitButton.Background = materialYellow
+						hitButton.Color = white
+						return hitButton.Layout(gtx)
+					})
+
+				}),
 				//cosole output
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 					// Position the console output (e.g., top-left corner)
@@ -237,9 +255,6 @@ func RunGoFishUi(window *app.Window, game *goFishBackEnd.GoFish) error {
 				}),
 			)
 			e.Frame(gtx.Ops)
-
 		}
-
 	}
-
 }

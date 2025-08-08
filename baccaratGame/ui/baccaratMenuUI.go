@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"CombinedCardgames/baccaratGame/game"
 	ui2 "CombinedCardgames/uiFunctions"
 	"gioui.org/app"
 	"gioui.org/layout"
@@ -11,7 +10,7 @@ import (
 	"image/color"
 )
 
-func RunBaccaratMenu(window *app.Window, g *game.Game) string {
+func RunBaccaratMenu(window *app.Window) string {
 	var ops op.Ops
 
 	var startGameButton, mainMenuButton, exitButton widget.Clickable

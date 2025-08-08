@@ -13,7 +13,7 @@ import (
 	"os"
 )
 
-func runEndScreen(window *app.Window, finalMessage string) error {
+func runEndScreen(window *app.Window, finalMessage string) (string, error) {
 	var ops op.Ops
 
 	background := ui2.LoadImage(backgroundImagePath)
@@ -34,7 +34,7 @@ func runEndScreen(window *app.Window, finalMessage string) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Error", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -47,12 +47,12 @@ func runEndScreen(window *app.Window, finalMessage string) error {
 
 			//Calls Menu UI, no need for a game input
 			if menuButton.Clicked(gtx) {
-				//RunMainMenu(window)
+				return "", nil
 			}
 			//Exits the program completely
 			if exit.Clicked(gtx) {
 				os.Exit(0)
-				return nil
+				return "exit", nil
 			}
 
 			//Layout Stack of background image, cards, and buttons

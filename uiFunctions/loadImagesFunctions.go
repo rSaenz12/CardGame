@@ -66,7 +66,6 @@ func PrintCards(cards []image.Image, yOffset int, scale float32, cardHeight int)
 		// Loop through cards and draw each with spacing
 		cardWidth := 25 // approx width after scaling
 		spacing := 0
-		//cardHeight := int(float32(gtx.Constraints.Max.Y) * 0.6)
 		startingOffset := int(float32(gtx.Constraints.Max.X) / 2)
 
 		for i, card := range cards {

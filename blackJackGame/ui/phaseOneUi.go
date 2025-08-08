@@ -14,7 +14,7 @@ import (
 	"image"
 )
 
-func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
+func RunPhaseOne(window *app.Window, gameInstance *game.Game) (string, error) {
 
 	var ops op.Ops
 
@@ -56,7 +56,7 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
-			return e.Err
+			return "Error", e.Err
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
@@ -81,10 +81,11 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 			// Hit calls next UI and game input
 			if hitButton.Clicked(gtx) {
 				gameInstance.PhaseOne("1")
-				err := RunHitUserUi(window, gameInstance)
+				choice, err := RunHitUserUi(window, gameInstance)
 				if err != nil {
-					return err
+					return "Error", err
 				}
+				return choice, nil
 			}
 
 			// Stand calls next game input
@@ -181,10 +182,11 @@ func RunPhaseOne(window *app.Window, gameInstance *game.Game) error {
 			//sends straight to end screen, most likley a blackjack or blackjack tie
 			if gameInstance.CheckGameEnded() {
 				window.Invalidate()
-				err := RunWinOrLossScreen(window, gameInstance)
+				choice, err := RunWinOrLossScreen(window, gameInstance)
 				if err != nil {
-					return err
+					return "Error", err
 				}
+				return choice, nil
 			}
 
 			e.Frame(gtx.Ops)
