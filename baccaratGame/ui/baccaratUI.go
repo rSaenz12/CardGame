@@ -1,3 +1,4 @@
+//UI and buttons for actual card bet playing. 
 package ui
 
 import (
@@ -17,6 +18,7 @@ import (
 	"gioui.org/widget/material"
 )
 
+//This functio returns errors trigger by button clicks to play the game. 
 func RunBaccaratUI(window *app.Window, g *game.Game) error {
 	var ops op.Ops
 	th := material.NewTheme()
@@ -91,7 +93,7 @@ func RunBaccaratUI(window *app.Window, g *game.Game) error {
 							})
 						}),
 
-						// Bottom Section: Controls
+						// Button Section: Controls
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 							return layout.Inset{Bottom: unit.Dp(30)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 								if g.CurrentPhase == "betting" {
@@ -107,7 +109,7 @@ func RunBaccaratUI(window *app.Window, g *game.Game) error {
 		}
 	}
 }
-
+//deals and displays your hand and dealer hands. 
 func renderHand(th *material.Theme, title string, hand []game.Card, revealed bool) layout.Widget {
 	return func(gtx layout.Context) layout.Dimensions {
 		return layout.Flex{Axis: layout.Vertical, Alignment: layout.Middle}.Layout(gtx,
@@ -127,7 +129,7 @@ func renderHand(th *material.Theme, title string, hand []game.Card, revealed boo
 						handToRender = append(handToRender, "1B") // Card back image
 					}
 				}
-
+				//selects and draws resources for cards used in other parts of application. 
 				cardImages := ui2.GetCardImage(handToRender)
 				children := make([]layout.FlexChild, len(cardImages))
 				for i, img := range cardImages {
@@ -147,7 +149,7 @@ func renderHand(th *material.Theme, title string, hand []game.Card, revealed boo
 		)
 	}
 }
-
+//game controls tied to buttons. 
 func renderBettingControls(th *material.Theme, pBtn, bBtn, tBtn, dBtn, mBtn *widget.Clickable, currentBet string) layout.Widget {
 	return func(gtx layout.Context) layout.Dimensions {
 		return layout.Flex{Alignment: layout.Middle, Axis: layout.Vertical}.Layout(gtx,
@@ -172,13 +174,13 @@ func renderBettingControls(th *material.Theme, pBtn, bBtn, tBtn, dBtn, mBtn *wid
 		)
 	}
 }
-
+//button options after win/loss
 func renderResultControls(th *material.Theme, paBtn *widget.Clickable) layout.Widget {
 	return func(gtx layout.Context) layout.Dimensions {
 		return layout.Center.Layout(gtx, button(th, paBtn, "Play Again", false))
 	}
 }
-
+//button layout definition
 func button(th *material.Theme, click *widget.Clickable, text string, selected bool) layout.Widget {
 	return func(gtx layout.Context) layout.Dimensions {
 		btn := material.Button(th, click, text)
