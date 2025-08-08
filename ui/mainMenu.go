@@ -9,10 +9,10 @@ import (
 	"gioui.org/widget"
 	"log"
 
-	"CombinedCardgames/signals"
-
+	"CombinedCardgames/baccaratGame"
 	"CombinedCardgames/blackJackGame"
 	"CombinedCardgames/goFishGame"
+	"CombinedCardgames/signals"
 )
 
 func RunMainMenu(window *app.Window) error {
@@ -20,8 +20,7 @@ func RunMainMenu(window *app.Window) error {
 	var ops op.Ops
 
 	//Declare clickable for each menu option
-	var playBlackJackButton, playGoFishButton, exitButton widget.Clickable
-
+	var playBlackJackButton, playGoFishButton, playBaccaratButton, exitButton widget.Clickable
 	background := uiFunctions.LoadImage("arcadeBackground.png")
 	bgOp := paint.NewImageOp(background)
 
@@ -59,6 +58,11 @@ func RunMainMenu(window *app.Window) error {
 			if playGoFishButton.Clicked(gtx) {
 				goFishGame.GoFishMain(window)
 			}
+			//calls baccarat ui and game
+			if playBaccaratButton.Clicked(gtx) {
+				baccaratGame.BaccaratMain(window)
+			}
+
 			// Exits program
 			if exitButton.Clicked(gtx) {
 				log.Println("Main Menu: Exit button clicked. Sending exit signal.")
@@ -76,17 +80,20 @@ func RunMainMenu(window *app.Window) error {
 					return imageWidget.Layout(gtx)
 				}),
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					return uiFunctions.DrawThreeButtons(gtx,
+					return uiFunctions.DrawFourButtons(gtx,
 						&playBlackJackButton, //buton1
-						&playGoFishButton,    //button2
-						&exitButton,          //button3
-						"BlackJack",          //button1 text
-						"GoFish",             //button2 text
-						"Exit",               //button3 text
-						retroRed,             //button1 color
-						retroBlue,            //button2 color
-						retroYellow,          //button3 color
-						white)                //text color
+						&playGoFishButton,
+						&playBaccaratButton, //button3
+						&exitButton,         //button3
+						"BlackJack",         //button1 text
+						"GoFish",
+						"Baccarat", //button2 text
+						"Exit",     //button3 text
+						retroRed,   //button1 color
+						retroBlue,  //button2 color
+						retroYellow,
+						retroGreen, //button3 color
+						white)      //text color
 				}),
 			)
 			e.Frame(gtx.Ops)

@@ -71,6 +71,45 @@ func DrawThreeButtons(gtx layout.Context, button1Click, button2Click, button3Cli
 	)
 }
 
+// DrawFourButtons function that creates 4 buttons
+func DrawFourButtons(gtx layout.Context, button1Click, button2Click, button3Click, button4Click *widget.Clickable, button1Text, button2Text, button3Text, button4Text string, buttonColor1, buttonColor2, buttonColor3, buttonColor4, textColor color.NRGBA) layout.Dimensions {
+	targetY := int(float32(gtx.Constraints.Max.Y) * 0.9)
+
+	offset := op.Offset(image.Pt(0, targetY)).Push(gtx.Ops)
+	defer offset.Pop()
+
+	th := material.NewTheme()
+
+	return layout.Flex{
+		Axis: layout.Horizontal,
+	}.Layout(gtx,
+		layout.Flexed(0.25, func(gtx layout.Context) layout.Dimensions {
+			button1 := material.Button(th, button1Click, button1Text)
+			button1.Background = buttonColor1
+			button1.Color = textColor
+			return button1.Layout(gtx)
+		}),
+		layout.Flexed(0.25, func(gtx layout.Context) layout.Dimensions {
+			button2 := material.Button(th, button2Click, button2Text)
+			button2.Background = buttonColor2
+			button2.Color = textColor
+			return button2.Layout(gtx)
+		}),
+		layout.Flexed(0.25, func(gtx layout.Context) layout.Dimensions {
+			button3 := material.Button(th, button3Click, button3Text)
+			button3.Background = buttonColor3
+			button3.Color = textColor
+			return button3.Layout(gtx)
+		}),
+		layout.Flexed(0.25, func(gtx layout.Context) layout.Dimensions {
+			button4 := material.Button(th, button4Click, button4Text)
+			button4.Background = buttonColor4
+			button4.Color = textColor
+			return button4.Layout(gtx)
+		}),
+	)
+}
+
 func DrawDynamicButtons(gtx layout.Context, theme *material.Theme, clicks []*widget.Clickable, texts []string, buttonColor1, buttonColor2, textColor color.NRGBA) layout.Dimensions {
 
 	if len(clicks) != len(texts) {
