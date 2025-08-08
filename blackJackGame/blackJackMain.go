@@ -23,13 +23,16 @@ func BlackJackMain(window *app.Window) {
 		//window := new(app.Window)
 
 		// Pass the window and the initialized game state to your UI's Run function
-		if err := ui.RunMenu(window, currentGame); err != nil { // Pass currentGame here
-			log.Fatal(err)
+		err := ui.RunMenu(window, currentGame)
+		if err != nil {
+			log.Fatalf("Failed to run menu: %v", err)
 		}
+
 		//exit
 		os.Exit(0)
 	}()
 
 	//Gio application's main loop
 	app.Main()
+
 }

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"CombinedCardgames/signals"
 	"CombinedCardgames/ui"
 	"gioui.org/app"
+
 	"log"
 	"os"
 )
@@ -18,6 +20,12 @@ func main() {
 			log.Fatal(err)
 		}
 		//exit
+		sig := <-signals.MenuSignal
+		if sig {
+			if err := ui.RunMainMenu(window); err != nil { // Pass currentGame here
+				log.Fatal(err)
+			}
+		}
 		os.Exit(0)
 	}()
 

@@ -4,7 +4,6 @@ import (
 	"CombinedCardgames/blackJackGame/game"
 	ui2 "CombinedCardgames/uiFunctions"
 	"gioui.org/app"
-
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"

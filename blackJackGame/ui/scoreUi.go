@@ -64,6 +64,7 @@ func RunScorUi(window *app.Window, gameInstance *game.Game) error {
 				if err != nil {
 					return err
 				}
+
 			}
 			//uses game function to exit program
 			if exitButton.Clicked(gtx) {

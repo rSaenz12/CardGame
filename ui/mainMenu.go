@@ -2,13 +2,14 @@ package ui
 
 import (
 	"CombinedCardgames/uiFunctions"
-
 	"gioui.org/app"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/widget"
-	"os"
+	"log"
+
+	"CombinedCardgames/signals"
 
 	"CombinedCardgames/blackJackGame"
 	"CombinedCardgames/goFishGame"
@@ -36,6 +37,12 @@ func RunMainMenu(window *app.Window) error {
 		switch e := window.Event().(type) {
 
 		case app.DestroyEvent:
+			log.Printf("Main Menu: Window destroyed: %v", e.Err)
+			// Signal the main loop to exit the application
+			select {
+			case signals.ExitAppSignal <- true:
+			default:
+			}
 			return e.Err
 
 		case app.FrameEvent:
@@ -54,7 +61,13 @@ func RunMainMenu(window *app.Window) error {
 			}
 			// Exits program
 			if exitButton.Clicked(gtx) {
-				os.Exit(0)
+				log.Println("Main Menu: Exit button clicked. Sending exit signal.")
+				select {
+				case signals.ExitAppSignal <- true: // Send the global exit signal
+				default:
+					log.Println("Main Menu: ExitAppSignal channel blocked.")
+				}
+				return nil
 			}
 
 			//Layout Stack of background image and menu buttons
